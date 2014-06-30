@@ -12,6 +12,17 @@
 
 /* CONFIG ----------------------------------------------------------------------------------------------------------- */
 
+
+/*
+  Load Laravel paths
+*/
+$paths = require __DIR__.'/../bootstrap/paths.php';
+
+/*
+ Define storage path.
+*/
+$storage_path = $paths['storage'];
+
 $resolutions   = array(1382, 992, 768, 480); // the resolution break-points to use (screen widths, in pixels)
 $cache_path    = "ai-cache"; // where to store the generated re-sized images. Specify from your document root!
 $jpg_quality   = 75; // the quality of any generated JPGs on a scale of 0 to 100
@@ -45,11 +56,11 @@ if(!is_mobile()){
 }
 
 // does the $cache_path directory exist already?
-if (!is_dir("$document_root/$cache_path")) { // no
-  if (!mkdir("$document_root/$cache_path", 0755, true)) { // so make it
-    if (!is_dir("$document_root/$cache_path")) { // check again to protect against race conditions
+if (!is_dir("$storage_path/$cache_path")) { // no
+  if (!mkdir("$storage_path/$cache_path", 0755, true)) { // so make it
+    if (!is_dir("$storage_path/$cache_path")) { // check again to protect against race conditions
       // uh-oh, failed to make that directory
-      sendErrorImage("Failed to create cache directory at: $document_root/$cache_path");
+      sendErrorImage("Failed to create cache directory at: $storage_path/$cache_path");
     }
   }
 }
@@ -306,7 +317,7 @@ if(substr($requested_uri, 0,1) == "/") {
 }
 
 /* whew might the cache file be? */
-$cache_file = $document_root."/$cache_path/$resolution/".$requested_uri;
+$cache_file = $storage_path."/$cache_path/$resolution/".$requested_uri;
 
 /* Use the resolution value as a path variable and check to see if an image of the same name exists at that path */
 if (file_exists($cache_file)) { // it exists cached at that size
